@@ -1,0 +1,87 @@
+body{
+	background-color: #F0F0F0;
+}
+.main{
+	margin-top: 100px;
+	margin-left: 10px;
+	margin-right: 10px;
+	padding: 0px 0px 0px 0px;
+	border: 2px gray solid;
+	-moz-border-radius: 10px;
+	-webkit-border-bottom-left-radius: 10px;
+	-ms-border-radius: 10px;
+	border-radius: 10px;
+	background-color: #e8e8e8;
+	padding-bottom: 50px;
+}
+.main h1{
+	background-color:maroon;
+	color:yellow;
+	text-align: center;
+	border-bottom: 2px gray solid;
+	padding: 10px 0px 10px 0px;
+	margin: 0px 0px 10px 0px;
+	margin-top: 0px;
+	margin-bottom: 10px;
+	font-family: sans-serif;
+	font-size: 18pt;
+}
+h2{
+	text-align: center;
+}
+h3#wait{
+	display:none;
+}
+th{
+	font-weight: bold;
+}
+.clear{
+	clear:both;
+}
+#welcomePanel{
+	margin-left: 20px;
+	margin-right: 20px;
+	border: 1px black solid;
+	border-radius: 5px 5px 5px 5px;
+	padding: 10px 10px 10px 10px;
+	height: 75px;
+}
+#welcomePanel .left{
+	text-align: left;
+	float:left;
+	margin-left:10px;
+	float: left;
+	vertical-align: middle;
+	height: 50px;
+}
+#welcomePanel .right{
+	text-align:right;
+	float:right;
+	margin-right:10px;
+	vertical-align: middle;
+	height: 50px;
+}
+#infoPanel{
+	float: left;
+	width: 740px;
+	height: 400px;
+	background-color: #CACACA;
+	border: 2px gray solid;
+	border-radius: 10px 10px 10px 10px;
+	margin: 20px 20px 20px 20px;
+}
+#gameListWrapper{
+	float:left;
+	width: 200px;
+}
+#gameListWrapper h2{
+	
+}
+#gameListWrapper .gameList select{
+	width: 180px;
+	height: 300px;
+}
+
+#gameListWrapper .gameList .createGameForm{
+	
+}

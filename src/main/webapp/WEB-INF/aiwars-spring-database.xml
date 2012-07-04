@@ -1,0 +1,42 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/jdbc
+		http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+	
+	<!-- For cases where a real database is used, the properties are defined here.
+	<bean id="databasePropertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath:database.properties</value>
+		</property>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+
+	<bean id="securityDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${database.connection.driver}"/>
+		<property name="jdbcUrl" value="${database.connection.url}"/>
+		<property name="user" value="${database.connection.user}"/>
+		<property name="password" value="${database.connection.password}"/>
+		<property name="initialPoolSize" value="${database.connection.pool.size.initial}"/>
+		<property name="minPoolSize" value="${database.connection.pool.size.min}"/>
+		<property name="maxPoolSize" value="${database.connection.pool.size.max}"/>
+		<property name="acquireIncrement" value="${database.connection.pool.acquire.increment}"/>
+		<property name="maxStatements" value="0"/>
+		<property name="idleConnectionTestPeriod" value="${database.connection.pool.test.period}"/>
+		<property name="preferredTestQuery" value="${database.connection.pool.test.query}"/>
+	</bean>-->
+	
+	<bean id="userAccountDao" class="org.brbonline.aiwars.dao.UserAccountDaoImpl">
+		<property name="dataSource" ref="aiwarsDataSource"/>
+	</bean>
+
+	<jdbc:embedded-database id="aiwarsDataSource" type="HSQL">
+		<jdbc:script location="classpath:datasource/aiwars-db-schema.sql"/>
+		<jdbc:script location="classpath:datasource/aiwars-db-testdata.sql"/>
+	</jdbc:embedded-database>
+
+</beans>

@@ -1,0 +1,29 @@
+body{
+	background-color: #f0f0f0;
+	font-family: Verdana, Arial, Helvetica, sans-serif;	color: #333;
+	padding: 0px;
+	margin: 0px;
+}
+body,p, td, ul, ol, li, th, h3, h4, h5, h6 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333;
+	font-weight: normal;
+}
+div.error{
+	border: 1px red solid;
+	background-color: beige;
+	border: 1px solid #CF2B2Bd;
+	border-radius: 5px 5px 5px 5px;
+	margin-bottom: 10px;
+}
+div.error h2{
+	font-size: 14pt;
+	color: #CF2B2B;
+	font-size: 12pt;
+	font-weight: bold;
+}
+div.error li{
+	color: #CF2B2B;
+	font-style: italic;
+}

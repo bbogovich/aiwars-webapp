@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="org.brbonline.aiwars"/>
+	<!--
+		Enable JSP processing as views.
+	-->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+		<property name="prefix" value="/WEB-INF/jsp/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	
+	<!-- 
+		The jspViewResolver will identify which JSP file to load based on the name returned from
+		the controller.  All JSPs used in the application will be stored in WEB-INF/jsp
+		to prevent direct access.
+	 -->
+	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="order" value="3"/>
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+		<property name="prefix" value="/WEB-INF/jsp/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	
+	<!--
+		Localization lookup.  Will use messages.properties and exceptions.properties.
+	-->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>messages</value>
+				<value>exceptions</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="contextApplicationContextProvider" class="org.brbonline.aiwars.spring.ApplicationContextProvider"></bean>
+	<bean id="gameManager" class="org.brbonline.aiwars.contextmanager.DefaultGameManager" factory-method="getInstance" lazy-init="false" init-method="initialize" destroy-method="shutdown" scope="singleton">
+		<property name="websocketPort" value="31337"/>
+		<property name="socketPort" value="31338"/>
+	</bean>
+</beans>

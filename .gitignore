@@ -1,1 +1,10 @@
 target/
+.project
+.classpath
+.settings
+.settings/*
+.springBeans
+logs/
+logs/*
+*~
+#*

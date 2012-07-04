@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<!-- <layout class="org.apache.log4j.SimpleLayout"/> -->
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %t %c{2}:%L - %m%n" />
+		</layout>
+	</appender>
+	<appender name="logfile-spring" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="logs/aiwars-spring.log" />
+		<param name="MaxFileSize" value="10MB" />
+		<param name="append" value="false" />
+		<!-- Keep one backup file -->
+		<param name="MaxBackupIndex" value="10" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%p %t - [%d{HH:mm:ss, SSS}]:  %m%n" />
+		</layout>
+	</appender>
+	<appender name="logfile-jdbc" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="logs/aiwars-jdbc.log" />
+		<param name="append" value="false" />
+		<param name="MaxFileSize" value="25MB" />
+		<!-- Keep one backup file -->
+		<param name="MaxBackupIndex" value="10" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%p %t %c - %m%n" />
+		</layout>
+	</appender>
+	<appender name="logfile-all" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="logs/aiwars-all.log" />
+		<param name="append" value="false" />
+		<param name="MaxFileSize" value="25MB" />
+		<!-- Keep one backup file -->
+		<param name="MaxBackupIndex" value="10" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%p %t - [%d{HH:mm:ss, SSS}]:  %m%n" />
+		</layout>
+	</appender>
+	<appender name="logfile" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="logs/aiwars.log" />
+		<param name="append" value="false" />
+		<param name="MaxFileSize" value="10MB" />
+		<!-- Keep one backup file -->
+		<param name="MaxBackupIndex" value="10" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%p %t - [%d{HH:mm:ss, SSS}]:  %m%n" />
+		</layout>
+	</appender>
+	<logger name="org.springframework">
+		<level value="debug" />
+		<appender-ref ref="logfile-spring" />
+	</logger>
+	<logger name="org.brbonline">
+		<level value="debug" />
+		<appender-ref ref="logfile" />
+	</logger>
+	<logger name="websocket">
+		<level value="debug" />
+		<appender-ref ref="logfile" />
+	</logger>
+	<root>
+		<priority value="debug" />
+		<appender-ref ref="ConsoleAppender" />
+		<appender-ref ref="logfile-all" />
+	</root>
+</log4j:configuration>
