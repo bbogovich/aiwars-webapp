@@ -20,6 +20,15 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 		console.log("Registration Successful");
 		playerRegistered=true;
 	};
+	function playerListUpdateCallback(response){
+		console.log("Player list updated");
+	}
+	function gamePausedCallback(response){
+		console.log("Game Paused");
+	}
+	function gameResumedCallback(response){
+		console.log("Game Resumed");
+	}
 	this.init=function(){
 		websocket.addEventListener("open",function(){
 			logInitMessage("WebSocket established");
