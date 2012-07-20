@@ -1,11 +1,13 @@
 package org.brbonline.aiwars.game.instance;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.brbonline.aiwars.game.user.UserSession;
+import org.brbonline.aiwars.socketprotocol.game.GameMessage;
 
 public abstract class GameInstance implements Runnable {
 	
@@ -28,6 +30,12 @@ public abstract class GameInstance implements Runnable {
 		gameUserSessions.add(userSession);
 		userSession.setActiveGame(this);
 		onUserAdd(userSession);
+	}
+	
+	public void sendToAll(GameMessage message) throws IOException{
+		for (Player player:players){
+			player.getUserSession().getSocket().write(message);
+		}
 	}
 	
 	public abstract void onUserSocketConnected(UserSession userSession);

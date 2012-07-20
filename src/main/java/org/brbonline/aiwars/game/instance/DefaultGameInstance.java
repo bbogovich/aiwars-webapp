@@ -1,23 +1,34 @@
 package org.brbonline.aiwars.game.instance;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.brbonline.aiwars.game.user.UserSession;
+import org.brbonline.aiwars.model.PlayerListItem;
 import org.brbonline.aiwars.socketprotocol.game.GameMessage;
+import org.brbonline.aiwars.socketprotocol.game.defaultgame.outbound.PlayerList;
 import org.brbonline.aiwars.socketprotocol.game.inbound.StartGameMessage;
 import org.brbonline.aiwars.socketprotocol.game.outbound.RegistrationSuccessMessage;
 
 public class DefaultGameInstance extends GameInstance {
-	
+	private Logger logger = Logger.getLogger(DefaultGameInstance.class);
 	/**
 	 * Width of game arena
 	 */
-	private int UNIVERSE_WIDTH=500;
+	private int UNIVERSE_WIDTH=1000;
 	/**
 	 * Height of game arena
 	 */
-	private int UNIVERSE_HEIGHT=500;
+	private int UNIVERSE_HEIGHT=1000;
+	/**
+	 * Starting positions for players
+	 * */
+	private int[][] startPositions={
+			{100,100},
+			{900,900}
+	};
 	/**
 	 * Frequency to send synchronization updates to the client with the full world state
 	 */
@@ -104,14 +115,14 @@ public class DefaultGameInstance extends GameInstance {
 
 	@Override
 	public void startGame() {
-		// TODO Auto-generated method stub
-
+		logger.info("startGame()");
+		gameStarted=true;
 	}
 
 	@Override
 	public void stopGame() {
 		// TODO Auto-generated method stub
-
+		gameStarted=false;
 	}
 
 	@Override
@@ -133,6 +144,8 @@ public class DefaultGameInstance extends GameInstance {
 				oldPlayer.setUserSession(userSession);
 			}else{
 				Player newPlayer = new Player();
+				newPlayer.setPositionX(Math.round(Math.random()*UNIVERSE_WIDTH));
+				newPlayer.setPositionY(Math.round(Math.random()*UNIVERSE_WIDTH));
 				newPlayer.setUserSession(userSession);
 				this.players.add(newPlayer);
 				this.userSessionToPlayerMap.put(sessionId, newPlayer);
@@ -142,9 +155,27 @@ public class DefaultGameInstance extends GameInstance {
 			newPlayer.setUserSession(userSession);
 			this.players.add(newPlayer);
 			this.userSessionToPlayerMap.put(sessionId, newPlayer);
+			try {
+				this.sendPlayerList();
+			} catch (IOException e) {
+				logger.error(e.getMessage(),e);
+			}
 		}
 	}
 
+	protected void sendPlayerList() throws IOException{
+		PlayerList playerList = new PlayerList();
+		List list = new ArrayList<PlayerListItem>(players.size());
+		for (Player player:players){
+			PlayerListItem item = new PlayerListItem();
+			item.setPlayerName(player.getUserSession().getUserAccount().getUserLoginId());
+			item.setSessionId(player.getUserSessionId());
+			item.setUserKey(player.getUserSession().getUserId());
+			list.add(item);
+		}
+		this.sendToAll(playerList);
+	}
+	
 	@Override
 	public void onUserSocketConnected(UserSession userSession) {
 		try {

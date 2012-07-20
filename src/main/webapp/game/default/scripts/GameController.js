@@ -19,7 +19,11 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 	function registerCallback(response){
 		console.log("Registration Successful");
 		playerRegistered=true;
-	};
+	}
+	function gameStateCallback(response){
+		console.log("New game state received");
+		console.log(response);
+	}
 	function playerListUpdateCallback(response){
 		console.log("Player list updated");
 	}

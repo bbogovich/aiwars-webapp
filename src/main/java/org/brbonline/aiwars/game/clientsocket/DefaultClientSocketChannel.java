@@ -3,21 +3,17 @@ package org.brbonline.aiwars.game.clientsocket;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
-
 import org.brbonline.aiwars.contextmanager.GameManager;
 import org.brbonline.aiwars.game.user.UserSession;
 import org.brbonline.aiwars.socketprotocol.game.GameMessage;
 import org.brbonline.aiwars.socketprotocol.game.inbound.GameRegistrationMessage;
-
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Base class with common functionality for ClientSocketChannel implementations.
