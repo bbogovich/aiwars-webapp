@@ -3,19 +3,14 @@ package org.brbonline.aiwars.game.instance;
 import org.brbonline.aiwars.game.user.UserSession;
 
 public class Player {
-	private UserSession userSession;
 	private String userSessionId;
 	private double positionX;
 	private double positionY;
+	private double velocityX;
+	private double velocityY;
 	private double heading;
 	private double speed;
 	
-	public UserSession getUserSession() {
-		return userSession;
-	}
-	public void setUserSession(UserSession userSession) {
-		this.userSession = userSession;
-	}
 	public String getUserSessionId() {
 		return userSessionId;
 	}
@@ -46,5 +41,16 @@ public class Player {
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
-	
+	public double getVelocityX() {
+		return velocityX;
+	}
+	public void setVelocityX(double velocityX) {
+		this.velocityX = velocityX;
+	}
+	public double getVelocityY() {
+		return velocityY;
+	}
+	public void setVelocityY(double velocityY) {
+		this.velocityY = velocityY;
+	}
 }

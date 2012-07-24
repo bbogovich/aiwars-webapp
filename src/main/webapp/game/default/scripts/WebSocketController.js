@@ -42,8 +42,8 @@ WebSocketController = function(){
 			if(messageHandler){
 				for (var i=0,ct=messageHandler.length;i<ct;i++){
 					var handler = messageHandler[i];
-					if(typeof(messageHandler)=="function"){
-						messageHandler(message);
+					if(typeof(handler)=="function"){
+						handler(message);
 					}else{
 						console.warn("Unregistered message type "+message.messageType);
 					}
@@ -63,16 +63,16 @@ WebSocketController = function(){
 				websocketOpen=true;
 				console.log("websocket.onopen");
 				onOpen();
-			}
+			};
 			websocket.onmessage = function(e){
 				console.log("websocket.onmessage");
 				console.log(e);
 				onMessage(e.data);
-			}
+			};
 			websocket.onclose=function(e){
 				websocket=null;
 				onClose();
-			}
+			};
 			console.log(websocket);
 		}
 	}
@@ -105,7 +105,7 @@ WebSocketController = function(){
 		}else{
 			websocket.send(data);
 		}
-	}
+	};
 	this.send=function(/*String*/messageType,/*Object*/data){
 		if(!websocket){
 			alert("websocket is not yet open");
@@ -140,9 +140,8 @@ WebSocketController = function(){
 				console.error("Unknown event listener "+eventTYpe);
 		}
 		return eventId;
-	}
+	};
 	this.removeEventListener = function(eventType/*,[<String> messageType,]<Number> index*/){
-		var listeners;
 		switch(eventType){
 			case "open":
 				eventListeners["open"][arguments[1]]=null;
@@ -152,7 +151,7 @@ WebSocketController = function(){
 				break;
 			case "message":
 				if(arguments.length==2){ //this event is called for all messages received
-					listeners = eventListeners["message"][arguments[1]]=null;
+					eventListeners["message"][arguments[1]]=null;
 				}else{
 					eventId = $this.removeMessageHandler(arguments[1],arguments[2]);
 				}
@@ -161,7 +160,7 @@ WebSocketController = function(){
 				console.error("Unknown event listener "+eventTYpe);
 		}
 		return eventId;
-	}
+	};
 	this.addMessageHandler = function(/*String*/messageType,/*function(message)*/callback){
 		console.log("Registering message handler of type "+messageType);
 		var idx=0;
@@ -172,14 +171,14 @@ WebSocketController = function(){
 		}
 		messageHandlers[messageType].push(callback);
 		return idx;
-	}
+	};
 	this.removeMessageHandler=function(/*<String>*/messageType,/*<Number>*/idx){
 		if(messageHandlers[messageType]){
 			messageHanlders[messageType][idx]=null;
 		}else{
 			console.error("Attempting to remove an unknown message handler type \""+messageType+"\"");
 		}
-	}
+	};
 	if(!window.WebSocket){
 		if(window.MozWebSocket){
 			window.WebSocket = window.MozWebSocket;

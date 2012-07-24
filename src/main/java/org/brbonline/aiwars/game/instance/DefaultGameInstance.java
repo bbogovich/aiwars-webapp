@@ -9,6 +9,7 @@ import org.brbonline.aiwars.game.user.UserSession;
 import org.brbonline.aiwars.model.PlayerListItem;
 import org.brbonline.aiwars.socketprotocol.game.GameMessage;
 import org.brbonline.aiwars.socketprotocol.game.defaultgame.outbound.PlayerList;
+import org.brbonline.aiwars.socketprotocol.game.inbound.PauseGameMessage;
 import org.brbonline.aiwars.socketprotocol.game.inbound.StartGameMessage;
 import org.brbonline.aiwars.socketprotocol.game.outbound.RegistrationSuccessMessage;
 
@@ -37,6 +38,8 @@ public class DefaultGameInstance extends GameInstance {
 	 * Time to sleep between game frames
 	 */
 	private int FRAME_INTERVAL=20;
+	
+	private long lastSyncTime=0L;
 	
 	public DefaultGameInstance(String instanceName, String creatorName) {
 		super(instanceName, creatorName);
@@ -81,7 +84,11 @@ public class DefaultGameInstance extends GameInstance {
 	}
 	
 	/**
-	 * Run loop for the "paused" state
+	 * Primary run loop for the game.
+	 * For each player, process all inputs.
+	 * Move all players.
+	 * If the update interval has been reached, send the world state.
+	 * 
 	 * Retrieve all pending input from clients and check for resume request.
 	 */
 	protected void runMain(){
@@ -91,8 +98,14 @@ public class DefaultGameInstance extends GameInstance {
 			for (GameMessage message:messages){
 				if(message instanceof StartGameMessage){
 					gameStarted=true;
+				} else if (message instanceof PauseGameMessage){
+					gamePaused=true;
 				}
 			}
+		}
+		if(gameStarted&&!gamePaused){
+			//update player position
+			//check for collision
 		}
 	}
 	
@@ -165,7 +178,7 @@ public class DefaultGameInstance extends GameInstance {
 
 	protected void sendPlayerList() throws IOException{
 		PlayerList playerList = new PlayerList();
-		List list = new ArrayList<PlayerListItem>(players.size());
+		List<PlayerListItem> list = new ArrayList<PlayerListItem>(players.size());
 		for (Player player:players){
 			PlayerListItem item = new PlayerListItem();
 			item.setPlayerName(player.getUserSession().getUserAccount().getUserLoginId());

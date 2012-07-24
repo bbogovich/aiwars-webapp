@@ -7,15 +7,23 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 	/*send registration message to bind websocket to player*/
 	function register(){
 		if(websocket){
-			websocket.send(
-					"game.inbound.GameRegistrationMessage",
-					{
+			websocket.send("game.inbound.GameRegistrationMessage",{
 						transactionId:new Date().getTime(),
 						userSessionId:SESSION_ID,
 						userType:"USER_TYPE_PLAYER"
 					});
 		}
 	};
+	function startGame(){
+		if(websocket){
+			websocket.send("game.inbound.StartGameMessage",{transactionId:new Date().getTime()});
+		}
+	}
+	function pauseGame(){
+		if(websocket){
+			websocket.send("game.inbound.PauseGameMessage",{transactionId:new Date().getTime()});
+		}
+	}
 	function registerCallback(response){
 		console.log("Registration Successful");
 		playerRegistered=true;
@@ -33,7 +41,7 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 	function gameResumedCallback(response){
 		console.log("Game Resumed");
 	}
-	this.init=function(){
+	function init(){
 		websocket.addEventListener("open",function(){
 			logInitMessage("WebSocket established");
 			logInitMessage("Sending registration request");
@@ -48,5 +56,8 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 		});
 		websocket.addMessageHandler("org.brbonline.aiwars.socketprotocol.game.outbound.RegistrationSuccessMessage",registerCallback);
 		websocket.connect(websocketURL);
-	}
-}
+	};
+	this.init = init;
+	this.startGame = startGame;
+	this.pauseGame = pauseGame;
+};
