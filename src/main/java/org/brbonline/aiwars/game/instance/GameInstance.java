@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.brbonline.aiwars.contextmanager.DefaultGameManager;
+import org.brbonline.aiwars.contextmanager.GameManager;
 import org.brbonline.aiwars.game.user.UserSession;
 import org.brbonline.aiwars.socketprotocol.game.GameMessage;
 
@@ -33,8 +35,12 @@ public abstract class GameInstance implements Runnable {
 	}
 	
 	public void sendToAll(GameMessage message) throws IOException{
+		GameManager manager = DefaultGameManager.getInstance();
 		for (Player player:players){
-			player.getUserSession().getSocket().write(message);
+			UserSession session = manager.getUserSessionByHttpSessionId(player.getUserSessionId());
+			if(session!=null&&session.getSocket()!=null){
+				session.getSocket().write(message);
+			}
 		}
 	}
 	
@@ -76,5 +82,13 @@ public abstract class GameInstance implements Runnable {
 
 	protected void setGameType(String gameType) {
 		this.gameType = gameType;
+	}
+	
+	protected GameManager getGameManager(){
+		return DefaultGameManager.getInstance();
+	}
+	
+	protected UserSession getUserSession(Player player){
+		return getGameManager().getUserSessionByHttpSessionId(player.getUserSessionId());
 	}
 }

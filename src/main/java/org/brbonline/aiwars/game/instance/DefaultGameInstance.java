@@ -56,7 +56,7 @@ public class DefaultGameInstance extends GameInstance {
 	 */
 	protected void runIdle(){
 		for (Player player:this.players){
-			UserSession session = player.getUserSession();
+			UserSession session = this.getGameManager().getUserSessionByHttpSessionId(player.getUserSessionId());
 			List<GameMessage> messages = session.getSocket().readMessages();
 			for (GameMessage message:messages){
 				if(message instanceof StartGameMessage){
@@ -73,7 +73,7 @@ public class DefaultGameInstance extends GameInstance {
 	 */
 	protected void runPaused(){
 		for (Player player:this.players){
-			UserSession session = player.getUserSession();
+			UserSession session = this.getGameManager().getUserSessionByHttpSessionId(player.getUserSessionId());
 			List<GameMessage> messages = session.getSocket().readMessages();
 			for (GameMessage message:messages){
 				if(message instanceof StartGameMessage){
@@ -93,7 +93,7 @@ public class DefaultGameInstance extends GameInstance {
 	 */
 	protected void runMain(){
 		for (Player player:this.players){
-			UserSession session = player.getUserSession();
+			UserSession session = this.getGameManager().getUserSessionByHttpSessionId(player.getUserSessionId());
 			List<GameMessage> messages = session.getSocket().readMessages();
 			for (GameMessage message:messages){
 				if(message instanceof StartGameMessage){
@@ -154,18 +154,18 @@ public class DefaultGameInstance extends GameInstance {
 			//user is already in the game.  this really shouldn't happen.  rebind user's player object.
 			Player oldPlayer = this.userSessionToPlayerMap.get(sessionId);
 			if(oldPlayer!=null){
-				oldPlayer.setUserSession(userSession);
+				oldPlayer.setUserSessionId(sessionId);
 			}else{
 				Player newPlayer = new Player();
 				newPlayer.setPositionX(Math.round(Math.random()*UNIVERSE_WIDTH));
 				newPlayer.setPositionY(Math.round(Math.random()*UNIVERSE_WIDTH));
-				newPlayer.setUserSession(userSession);
+				newPlayer.setUserSessionId(sessionId);
 				this.players.add(newPlayer);
 				this.userSessionToPlayerMap.put(sessionId, newPlayer);
 			}
 		} else {
 			Player newPlayer = new Player();
-			newPlayer.setUserSession(userSession);
+			newPlayer.setUserSessionId(sessionId);
 			this.players.add(newPlayer);
 			this.userSessionToPlayerMap.put(sessionId, newPlayer);
 			try {
@@ -180,10 +180,11 @@ public class DefaultGameInstance extends GameInstance {
 		PlayerList playerList = new PlayerList();
 		List<PlayerListItem> list = new ArrayList<PlayerListItem>(players.size());
 		for (Player player:players){
+			UserSession session = getUserSession(player);
 			PlayerListItem item = new PlayerListItem();
-			item.setPlayerName(player.getUserSession().getUserAccount().getUserLoginId());
+			item.setPlayerName(session.getUserAccount().getUserLoginId());
 			item.setSessionId(player.getUserSessionId());
-			item.setUserKey(player.getUserSession().getUserId());
+			item.setUserKey(session.getUserId());
 			list.add(item);
 		}
 		this.sendToAll(playerList);
