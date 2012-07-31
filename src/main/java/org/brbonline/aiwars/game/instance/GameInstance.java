@@ -70,7 +70,7 @@ public abstract class GameInstance implements Runnable {
 		this.gameUserSessions = gameUserSessions;
 	}
 	
-	public abstract void startGame();
+	public abstract void startGame() throws IOException;
 	public abstract void stopGame();
 	public abstract void teardown();
 	

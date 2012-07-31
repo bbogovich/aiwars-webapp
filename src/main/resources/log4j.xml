@@ -51,12 +51,12 @@
 		<level value="debug" />
 		<appender-ref ref="logfile-spring" />
 	</logger>
-	<logger name="org.brbonline">
+	<logger name="org.brbonline.aiwars">
 		<level value="debug" />
 		<appender-ref ref="logfile" />
 	</logger>
 	<logger name="websocket">
-		<level value="debug" />
+		<level value="info" />
 		<appender-ref ref="logfile" />
 	</logger>
 	<root>

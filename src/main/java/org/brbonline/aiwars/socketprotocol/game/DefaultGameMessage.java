@@ -16,6 +16,6 @@ public abstract class DefaultGameMessage implements GameMessage,Serializable {
 	}
 	
 	public String getMessageType() {
-		return this.getClass().getName().replace("org.brbonline.aiwars.game.socketprotocol", "");
+		return this.getClass().getName().replace("org.brbonline.aiwars.socketprotocol.", "");
 	}
 }

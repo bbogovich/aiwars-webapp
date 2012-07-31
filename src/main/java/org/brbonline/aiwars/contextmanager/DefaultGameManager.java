@@ -105,6 +105,9 @@ public class DefaultGameManager implements GameManager {
 				e.printStackTrace();
 			}
 		}
+		for (GameInstance instance:gameInstances){
+			instance.teardown();
+		}
 	}
 	
 	public Set<GameInstance> getGameInstances() {

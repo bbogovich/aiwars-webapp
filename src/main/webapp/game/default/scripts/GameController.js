@@ -3,7 +3,7 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 	var $this=this;
 	var connected=false;
 	var playerRegistered=false;
-	
+	var stateListeners=[];
 	/*send registration message to bind websocket to player*/
 	function register(){
 		if(websocket){
@@ -24,6 +24,11 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 			websocket.send("game.inbound.PauseGameMessage",{transactionId:new Date().getTime()});
 		}
 	}
+	function resumeGame(){
+		if(websocket){
+			websocket.send("game.inbound.PauseGameMessage",{transactionId:new Date().getTime()});
+		}
+	}
 	function registerCallback(response){
 		console.log("Registration Successful");
 		playerRegistered=true;
@@ -31,6 +36,12 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 	function gameStateCallback(response){
 		console.log("New game state received");
 		console.log(response);
+		$this.gameState.players = response.players;
+		for (var i=0,ct=stateListeners.length;i<ct;i++){
+			if(stateListeners[i]){
+				stateListeners[i]();
+			}
+		}
 	}
 	function playerListUpdateCallback(response){
 		console.log("Player list updated");
@@ -52,12 +63,26 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 			connected=false;
 		});
 		websocket.addEventListener("message",function(data){
-			console.log("Message Received: "+data);
+			if(typeof(data)=="undefined"){
+				console.log("Message received with no data");
+			}else{
+				console.log("Message Received: "+data);
+			}
 		});
-		websocket.addMessageHandler("org.brbonline.aiwars.socketprotocol.game.outbound.RegistrationSuccessMessage",registerCallback);
+		websocket.addMessageHandler("game.outbound.RegistrationSuccessMessage",registerCallback);
+		websocket.addMessageHandler("game.defaultgame.outbound.GameStateMessage",gameStateCallback);
 		websocket.connect(websocketURL);
 	};
 	this.init = init;
 	this.startGame = startGame;
 	this.pauseGame = pauseGame;
+	this.gameState = {
+		players:[],
+		missiles:[]
+	};
+	this.addGameStateListener=function(fn){
+		var result=stateListeners.length;
+		stateListeners.push(fn);
+		return result;
+	}
 };

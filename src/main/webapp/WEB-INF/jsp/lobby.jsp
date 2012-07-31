@@ -131,6 +131,7 @@ function init(){
 						<button type="submit">Log Out</button>
 					</form>
 				</div>
+				<div class="clear"></div>
 			</div>
 			<div id="infoPanel">
 				<h2></h2>
@@ -151,12 +152,21 @@ function init(){
 					</form>
 				</div>
 				<div class="createGameForm">
-					<h2>Create New Game</h2>
-					<form name="createGameForm" onsubmit="return false">
-						<input type="text" name="gameName"/><button type="button" onclick="onCreateGame()">Create Game</button>
-						<select name="gameType">
-							<option value="DefaultGameInstance">Default</option>
-						</select>
+					<h2>New Game</h2>
+					<form name="createGameForm">
+						<div>
+							<label for="gameName">Name:</label>
+							<input type="text" name="gameName" size="10"/>
+						</div>
+						<div>
+							<label for="gameType">Type:</label>
+							<select name="gameType">
+								<option value="DefaultGameInstance">Default</option>
+							</select>
+						</div>
+						<div class="buttonWrapper">
+							<button type="button" onclick="onCreateGame()">Create Game</button>
+						</div>
 					</form>
 				</div>
 			</div>

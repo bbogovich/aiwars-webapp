@@ -36,8 +36,11 @@ WebSocketController = function(){
 			}
 		}
 		try{
+			console.log("Parse incoming message");
 			var message = JSON.parse(data);
+			console.log(message);
 			var messageType = message.messageType;
+			console.log("message type: "+messageType);
 			var messageHandler = messageHandlers[messageType];
 			if(messageHandler){
 				for (var i=0,ct=messageHandler.length;i<ct;i++){
@@ -110,7 +113,9 @@ WebSocketController = function(){
 		if(!websocket){
 			alert("websocket is not yet open");
 		}else{
-			websocket.send(messageType+"|"+JSON.stringify(data));
+			var message = messageType+"|"+JSON.stringify(data);
+			console.log("Send:\n"+message);
+			websocket.send(message);
 		}
 	};
 	this.addEventListener = function(eventType/*[<String> messageType],<Function> callback*/){

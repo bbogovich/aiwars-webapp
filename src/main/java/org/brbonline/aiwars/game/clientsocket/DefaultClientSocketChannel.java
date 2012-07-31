@@ -25,6 +25,9 @@ public abstract class DefaultClientSocketChannel implements ClientSocketChannel 
 	private Logger logger = Logger.getLogger(DefaultClientSocketChannel.class);
 	private UserSession userSession=null;
 	
+	private Object readMutex=new Object();
+	private Object writeMutex=new Object();
+	
 	BlockingQueue<GameMessage> readQueue = new LinkedBlockingQueue<GameMessage>();
 	BlockingQueue<GameMessage> writeQueue = new LinkedBlockingQueue<GameMessage>();
 	
@@ -39,16 +42,20 @@ public abstract class DefaultClientSocketChannel implements ClientSocketChannel 
 	 * @see org.brbonline.aiwars.game.clientsocket.ClientSocketChannel#bufferedWrite(org.brbonline.aiwars.game.socketprotocol.game.GameMessage)
 	 */
 	public void bufferedWrite(GameMessage message){
-		writeQueue.add(message);
+		synchronized(writeMutex){
+			writeQueue.add(message);
+		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.brbonline.aiwars.game.clientsocket.ClientSocketChannel#flush()
 	 */
 	public void flush() throws IOException{
-		List<GameMessage> messages = new ArrayList<GameMessage>(writeQueue.size());
-		writeQueue.drainTo(messages);
-		this.send(mapper.writeValueAsString(messages));
+		synchronized(writeMutex){
+			List<GameMessage> messages = new ArrayList<GameMessage>(writeQueue.size());
+			writeQueue.drainTo(messages);
+			this.send(mapper.writeValueAsString(messages));
+		}
 	}
 	
 
@@ -56,8 +63,11 @@ public abstract class DefaultClientSocketChannel implements ClientSocketChannel 
 	 * @see org.brbonline.aiwars.game.clientsocket.ClientSocketChannel#readMessages()
 	 */
 	public List<GameMessage> readMessages() {
-		List<GameMessage> messages = new ArrayList<GameMessage>(readQueue.size());
-		readQueue.drainTo(messages);
+		List<GameMessage> messages;
+		synchronized(readMutex){
+			messages = new ArrayList<GameMessage>(readQueue.size());
+			readQueue.drainTo(messages);
+		}
 		return messages;
 	}
 
@@ -65,7 +75,11 @@ public abstract class DefaultClientSocketChannel implements ClientSocketChannel 
 	 * @see org.brbonline.aiwars.game.clientsocket.ClientSocketChannel#readNextMessage()
 	 */
 	public GameMessage readNextMessage() {
-		return readQueue.poll();
+		GameMessage result;
+		synchronized(readMutex){
+			result=readQueue.poll();
+		}
+		return result;
 	}
 	
 	/**
@@ -80,15 +94,11 @@ public abstract class DefaultClientSocketChannel implements ClientSocketChannel 
 		String messageBody = message.substring(nullSplit+1,message.length());
 		try {
 			request = (GameMessage)mapper.readValue(messageBody,Class.forName(messageClassName));
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			logger.error("Error parsing message from client: "+e.getMessage(),e);
 			disconnect();
-			e.printStackTrace();
+		} catch (Exception e){
+			logger.error("Error parsing message from client: "+e.getMessage(),e);
 		}
 		return request;
 	}
@@ -98,7 +108,6 @@ public abstract class DefaultClientSocketChannel implements ClientSocketChannel 
 	 * to the read buffer.
 	 */
 	protected void addReceivedMessage(String message) {
-		// TODO Auto-generated method stub
 		logger.debug("Message Received: "+message);
 		GameMessage receivedMessage = parseReceivedMessage(message);
 		if(userSession==null){
@@ -108,12 +117,16 @@ public abstract class DefaultClientSocketChannel implements ClientSocketChannel 
 					ClientSocketChannel oldSocket = userSession.getSocket();
 					oldSocket.disconnect();
 				}
+				this.userSession = userSession;
+				logger.debug("binding socket to user session");
 				userSession.setSocket(this);
 			}else{
 				logger.warn("Message received prior to client registration.  Dropping message with text \n"+message);
 			}
 		}else{
-			readQueue.add(receivedMessage);
+			synchronized(readMutex){
+				readQueue.add(receivedMessage);
+			}
 		}
 	}
 	
