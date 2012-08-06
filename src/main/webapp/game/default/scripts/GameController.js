@@ -84,5 +84,5 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 		var result=stateListeners.length;
 		stateListeners.push(fn);
 		return result;
-	}
+	};
 };

@@ -236,7 +236,8 @@ public class DefaultGameInstance extends GameInstance {
 				newPlayer.setPositionX(Math.round(Math.random()*UNIVERSE_WIDTH));
 				newPlayer.setPositionY(Math.round(Math.random()*UNIVERSE_HEIGHT));
 				//assign player a random direction with speed 1
-				newPlayer.setHeading(Math.random()*(2*Math.PI));
+				//newPlayer.setHeading(Math.random()*(2*Math.PI));
+				newPlayer.setHeading(0);
 				newPlayer.setSpeed(1.0);
 				newPlayer.setUserSessionId(sessionId);
 				this.players.add(newPlayer);
@@ -248,7 +249,8 @@ public class DefaultGameInstance extends GameInstance {
 			newPlayer.setPositionX(Math.round(Math.random()*UNIVERSE_WIDTH));
 			newPlayer.setPositionY(Math.round(Math.random()*UNIVERSE_HEIGHT));
 			//assign player a random direction with speed 1
-			newPlayer.setHeading(Math.random()*(2*Math.PI));
+			//newPlayer.setHeading(Math.random()*(2*Math.PI));
+			newPlayer.setHeading(0);
 			newPlayer.setSpeed(1.0);
 			newPlayer.setUserSessionId(sessionId);
 			this.players.add(newPlayer);
