@@ -11,9 +11,11 @@ import org.brbonline.aiwars.game.user.UserSession;
 import org.brbonline.aiwars.model.PlayerListItem;
 import org.brbonline.aiwars.model.UserAccount;
 import org.brbonline.aiwars.socketprotocol.game.GameMessage;
+import org.brbonline.aiwars.socketprotocol.game.defaultgame.inbound.*;
 import org.brbonline.aiwars.socketprotocol.game.defaultgame.outbound.GameStateMessage;
 import org.brbonline.aiwars.socketprotocol.game.defaultgame.outbound.PlayerList;
 import org.brbonline.aiwars.socketprotocol.game.inbound.PauseGameMessage;
+import org.brbonline.aiwars.socketprotocol.game.inbound.ResumeGameMessage;
 import org.brbonline.aiwars.socketprotocol.game.inbound.StartGameMessage;
 import org.brbonline.aiwars.socketprotocol.game.outbound.GameStartedMessage;
 import org.brbonline.aiwars.socketprotocol.game.outbound.RegistrationSuccessMessage;
@@ -129,6 +131,10 @@ public class DefaultGameInstance extends GameInstance {
 							syncAllClients();
 						} else if (message instanceof PauseGameMessage){
 							gamePaused=true;
+						} else if (message instanceof ResumeGameMessage){
+							gamePaused=false;
+						} else if (message instanceof SetHeadingMessage){
+							player.setHeading(((SetHeadingMessage)message).getHeading());
 						}
 					}
 				}
@@ -232,29 +238,10 @@ public class DefaultGameInstance extends GameInstance {
 			if(oldPlayer!=null){
 				oldPlayer.setUserSessionId(sessionId);
 			}else{
-				Player newPlayer = new Player();
-				newPlayer.setPositionX(Math.round(Math.random()*UNIVERSE_WIDTH));
-				newPlayer.setPositionY(Math.round(Math.random()*UNIVERSE_HEIGHT));
-				//assign player a random direction with speed 1
-				//newPlayer.setHeading(Math.random()*(2*Math.PI));
-				newPlayer.setHeading(0);
-				newPlayer.setSpeed(1.0);
-				newPlayer.setUserSessionId(sessionId);
-				this.players.add(newPlayer);
-				this.userSessionToPlayerMap.put(sessionId, newPlayer);
+				initPlayer(sessionId);
 			}
 		} else {
-			Player newPlayer = new Player();
-			newPlayer.setUserSessionId(sessionId);
-			newPlayer.setPositionX(Math.round(Math.random()*UNIVERSE_WIDTH));
-			newPlayer.setPositionY(Math.round(Math.random()*UNIVERSE_HEIGHT));
-			//assign player a random direction with speed 1
-			//newPlayer.setHeading(Math.random()*(2*Math.PI));
-			newPlayer.setHeading(0);
-			newPlayer.setSpeed(1.0);
-			newPlayer.setUserSessionId(sessionId);
-			this.players.add(newPlayer);
-			this.userSessionToPlayerMap.put(sessionId, newPlayer);
+			initPlayer(sessionId);
 			try {
 				this.sendPlayerList();
 			} catch (IOException e) {
@@ -263,6 +250,20 @@ public class DefaultGameInstance extends GameInstance {
 		}
 	}
 
+	protected Player initPlayer(String sessionId){
+		Player newPlayer = new Player();
+		newPlayer.setPositionX(Math.round(Math.random()*UNIVERSE_WIDTH));
+		newPlayer.setPositionY(Math.round(Math.random()*UNIVERSE_HEIGHT));
+		//assign player a random direction with speed 1
+		newPlayer.setHeading(Math.random()*(2*Math.PI));
+		//newPlayer.setHeading(0);
+		newPlayer.setSpeed(1.0);
+		newPlayer.setUserSessionId(sessionId);
+		this.players.add(newPlayer);
+		this.userSessionToPlayerMap.put(sessionId, newPlayer);
+		return newPlayer;
+	}
+	
 	protected void sendPlayerList() throws IOException{
 		logger.info("sendPlayerList()");
 		PlayerList playerList = new PlayerList();

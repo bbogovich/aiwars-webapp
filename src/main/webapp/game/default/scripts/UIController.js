@@ -25,11 +25,19 @@ UIController = function(gameController){
 		}
 	}
 	
+	function turnLeftButtonHandler(){
+		
+	}
+	
 	function initGameStateButtons(){
 		var form = document.forms["gameStateButtons"];
 		form["start"].addEventListener("click",gameController.startGame,false);
 		form["pause"].addEventListener("click",gameController.pauseGame,false);
 		form["resume"].addEventListener("click",gameController.resumeGame,false);
+	}
+	function initControlButtons(){
+		var form = document.forms["steeringButtons"];
+		form[].addEventListener("click",turnLeftButtonHandler,false);
 	}
 	
 	function init(){

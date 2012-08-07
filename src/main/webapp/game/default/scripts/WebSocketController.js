@@ -113,6 +113,7 @@ WebSocketController = function(){
 		if(!websocket){
 			alert("websocket is not yet open");
 		}else{
+			data.transactionId=new Date().getTime();
 			var message = messageType+"|"+JSON.stringify(data);
 			console.log("Send:\n"+message);
 			websocket.send(message);

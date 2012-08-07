@@ -16,17 +16,38 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 	};
 	function startGame(){
 		if(websocket){
-			websocket.send("game.inbound.StartGameMessage",{transactionId:new Date().getTime()});
+			websocket.send("game.inbound.StartGameMessage",{});
 		}
 	}
 	function pauseGame(){
 		if(websocket){
-			websocket.send("game.inbound.PauseGameMessage",{transactionId:new Date().getTime()});
+			websocket.send("game.inbound.PauseGameMessage",{});
 		}
 	}
 	function resumeGame(){
 		if(websocket){
-			websocket.send("game.inbound.PauseGameMessage",{transactionId:new Date().getTime()});
+			websocket.send("game.inbound.PauseGameMessage",{});
+		}
+	}
+	/*
+	 * setHeading(Number heading,Number turnDirection);
+	 * */
+	function setHeading(heading,turnDirection){
+		if(turnDirection!=0&&turnDirection!=1){
+			turnDirection = 0;
+		}
+		if(websocket){
+			websocket.send("game.defaultgame.inbound.SetHeadingMessage",{
+				heading:heading,
+				direction:turnDirection
+			});
+		}
+	}
+	function setSpeed(speed){
+		if(websocket){
+			websocket.send("game.defaultgame.inbound.SetSpeedMessage",{
+				speed:speed
+			});
 		}
 	}
 	function registerCallback(response){
@@ -85,4 +106,6 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 		stateListeners.push(fn);
 		return result;
 	};
+	this.TURN_DIRECTION_CLOCKWISE=0;
+	this.TURN_DIRECTION_COUNTERCLOCKWISE=1;
 };

@@ -43,7 +43,7 @@ public class Player {
 		double result=0;
 		if(!(Double.compare(heading, Math.PI*0.5)==0||Double.compare(heading,Math.PI*1.5)==0)){
 			double sinAngle = Math.sin(heading);
-			return ((heading>Math.PI*0.5&&heading<Math.PI*1.5)?-1:1)*Math.sqrt(speed*speed-sinAngle*sinAngle);
+			return /*((heading>Math.PI*0.5&&heading<Math.PI*1.5)?-1:1)**/Math.sqrt(speed*speed-sinAngle*sinAngle);
 		}
 		return result;
 	}
@@ -51,7 +51,7 @@ public class Player {
 		double result=0;
 		if(!(Double.compare(heading, 0)==0||Double.compare(heading,Math.PI)==0)){
 			double cosAngle = Math.cos(heading);
-			return ((heading>Math.PI&&heading<Math.PI*2)?-1:1)*Math.sqrt(speed*speed-cosAngle*cosAngle);
+			return /*((heading>Math.PI&&heading<Math.PI*2)?-1:1)**/Math.sqrt(speed*speed-cosAngle*cosAngle);
 		}
 		return result;
 	}

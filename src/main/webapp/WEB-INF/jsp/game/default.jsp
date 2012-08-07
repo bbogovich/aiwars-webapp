@@ -51,7 +51,26 @@ function init(){
 			<div id="gameInfo">
 				<div id="playerList"></div>
 			</div>
-			<div class="infoPanel"></div>
+			<div class="infoPanel">
+				<table>
+					<tbody>
+						<tr>
+							<th>Heading:</th>
+							<td><span id="info_heading"></span></td>
+						</tr>
+						<tr>
+							<th>Speed:</th>
+							<td><span id="info_speed"></span></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="steering">
+				<form name="steeringButtons">
+					<button name="turnLeft">&lt;</button>
+					<button name="turnRight">&gt;</button>
+				</form>
+			</div>
 			<div class="buttons">
 				<form name="gameStateButtons">
 					<button name="start" type="button">Start Game</button>
