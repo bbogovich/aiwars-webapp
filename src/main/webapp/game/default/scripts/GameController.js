@@ -1,9 +1,11 @@
 GameController = function(gameId,gameName,websocketURL,sessionId){
 	var websocket=new WebSocketController();
 	var $this=this;
+	var players={}; //map of session id to player object; updated by playerList messages from server
 	var connected=false;
 	var playerRegistered=false;
 	var stateListeners=[];
+	
 	/*send registration message to bind websocket to player*/
 	function register(){
 		if(websocket){
@@ -26,7 +28,7 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 	}
 	function resumeGame(){
 		if(websocket){
-			websocket.send("game.inbound.PauseGameMessage",{});
+			websocket.send("game.inbound.ResumeGameMessage",{});
 		}
 	}
 	/*
@@ -50,6 +52,13 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 			});
 		}
 	}
+	function playerListCallback(response){
+		for (var i=0,ct=stateListeners.length;i<ct;i++){
+			if(stateListeners[i]){
+				stateListeners[i](response);
+			}
+		}
+	}
 	function registerCallback(response){
 		console.log("Registration Successful");
 		playerRegistered=true;
@@ -57,7 +66,12 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 	function gameStateCallback(response){
 		console.log("New game state received");
 		console.log(response);
-		$this.gameState.players = response.players;
+		var newPlayers=response.players;
+		$this.gameState.players = newPlayers;
+		for (var i=0,ct=newPlayers.length;i<ct&&newPlayers[i].userSessionId!=sessionId;i++);
+		if(i<newPlayers.length){
+			$this.player = newPlayers[i];
+		}
 		for (var i=0,ct=stateListeners.length;i<ct;i++){
 			if(stateListeners[i]){
 				stateListeners[i]();
@@ -91,12 +105,16 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 			}
 		});
 		websocket.addMessageHandler("game.outbound.RegistrationSuccessMessage",registerCallback);
+		websocket.addMessageHandler("game.outbound.PlayerList",playerListCallback);
 		websocket.addMessageHandler("game.defaultgame.outbound.GameStateMessage",gameStateCallback);
 		websocket.connect(websocketURL);
 	};
 	this.init = init;
 	this.startGame = startGame;
 	this.pauseGame = pauseGame;
+	this.resumeGame = resumeGame;
+	this.setHeading = setHeading;
+	
 	this.gameState = {
 		players:[],
 		missiles:[]
@@ -108,4 +126,5 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 	};
 	this.TURN_DIRECTION_CLOCKWISE=0;
 	this.TURN_DIRECTION_COUNTERCLOCKWISE=1;
+	this.player=null;
 };

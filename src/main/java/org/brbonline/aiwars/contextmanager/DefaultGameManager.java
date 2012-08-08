@@ -33,6 +33,8 @@ public class DefaultGameManager implements GameManager {
 	private int websocketPort=-1;
 	private int socketPort=-1;
 	private boolean initialized=false;
+	private static Object shutdownMutex=new Object();
+	
 	/**
 	 * Map of HTTP Session ID to UserSession
 	 */
@@ -97,16 +99,18 @@ public class DefaultGameManager implements GameManager {
 	
 	public void shutdown(){
 		logger.info("Shutting down game manager");
-		for (GameCommServer server:this.commListeners){
-			try {
-				server.shutdown();
-				commListeners.remove(server);
-			} catch (IOException e) {
-				e.printStackTrace();
+		synchronized(shutdownMutex){
+			for (GameCommServer server:this.commListeners){
+				try {
+					server.shutdown();
+					commListeners.remove(server);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
-		}
-		for (GameInstance instance:gameInstances){
-			instance.teardown();
+			for (GameInstance instance:gameInstances){
+				instance.teardown();
+			}
 		}
 	}
 	

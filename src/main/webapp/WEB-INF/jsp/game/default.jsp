@@ -67,8 +67,8 @@ function init(){
 			</div>
 			<div class="steering">
 				<form name="steeringButtons">
-					<button name="turnLeft">&lt;</button>
-					<button name="turnRight">&gt;</button>
+					<button name="turnLeft" type="button">&lt;</button>
+					<button name="turnRight" type="button">&gt;</button>
 				</form>
 			</div>
 			<div class="buttons">

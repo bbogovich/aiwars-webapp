@@ -95,9 +95,9 @@ public class DefaultGameInstance extends GameInstance {
 			UserSession session = this.getGameManager().getUserSessionByHttpSessionId(player.getUserSessionId());
 			List<GameMessage> messages = session.getSocket().readMessages();
 			for (GameMessage message:messages){
-				if(message instanceof StartGameMessage){
-					logger.info("runPaused:   starting game");
-					startGame();
+				if(message instanceof ResumeGameMessage){
+					logger.info("runPaused: resuming game");
+					gamePaused=false;
 				}
 			}
 		}
