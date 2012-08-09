@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>org.brbonline</groupId>
 			<artifactId>websocket-server</artifactId>
-			<version>0.0.4</version>
+			<version>0.0.5</version>
 		</dependency>
 
 		<dependency>

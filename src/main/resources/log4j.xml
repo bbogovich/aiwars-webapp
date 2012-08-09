@@ -47,6 +47,16 @@
 			<param name="ConversionPattern" value="%p %t - [%d{HH:mm:ss, SSS}]:  %m%n" />
 		</layout>
 	</appender>
+	<appender name="logfile-websocket" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="logs/aiwars-websocket.log" />
+		<param name="append" value="false" />
+		<param name="MaxFileSize" value="10MB" />
+		<!-- Keep one backup file -->
+		<param name="MaxBackupIndex" value="10" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%p %t - [%d{HH:mm:ss, SSS}]:  %m%n" />
+		</layout>
+	</appender>
 	<logger name="org.springframework">
 		<level value="debug" />
 		<appender-ref ref="logfile-spring" />
@@ -56,8 +66,8 @@
 		<appender-ref ref="logfile" />
 	</logger>
 	<logger name="websocket">
-		<level value="info" />
-		<appender-ref ref="logfile" />
+		<level value="debug" />
+		<appender-ref ref="logfile-websocket" />
 	</logger>
 	<root>
 		<priority value="debug" />

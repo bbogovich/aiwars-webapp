@@ -69,6 +69,7 @@ function init(){
 				<form name="steeringButtons">
 					<button name="turnLeft" type="button">&lt;</button>
 					<button name="turnRight" type="button">&gt;</button>
+					<button name="launchMissile" type="button">Fire!</button>
 				</form>
 			</div>
 			<div class="buttons">

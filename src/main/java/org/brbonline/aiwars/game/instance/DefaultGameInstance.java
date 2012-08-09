@@ -2,7 +2,9 @@ package org.brbonline.aiwars.game.instance;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.brbonline.aiwars.contextmanager.GameManager;
@@ -57,6 +59,8 @@ public class DefaultGameInstance extends GameInstance {
 	private boolean gameStarted=false;
 	private boolean gamePaused=false;
 	private boolean instanceFinished=false;
+	
+	private Set<Missile> missiles = new HashSet<Missile>();
 	
 	/**
 	 * Run loop for the "idle" period before a game starts and after it completes
@@ -135,6 +139,16 @@ public class DefaultGameInstance extends GameInstance {
 							gamePaused=false;
 						} else if (message instanceof SetHeadingMessage){
 							player.setHeading(((SetHeadingMessage)message).getHeading());
+						} else if (message instanceof LaunchMissileMessage) {
+							logger.info("Creating new missile for player "+player.getUserSessionId());
+							Missile missile = new Missile();
+							missile.setHeading(player.getHeading());
+							missile.setPositionX(player.getPositionX());
+							missile.setPositionY(player.getPositionY());
+							missile.setSpeed(5);
+							missile.setUserSessionId(player.getUserSessionId());
+							missile.setTimeToLive(100);
+							missiles.add(missile);
 						}
 					}
 				}
@@ -157,6 +171,30 @@ public class DefaultGameInstance extends GameInstance {
 					newY = UNIVERSE_HEIGHT;
 				}
 				player.setPositionY(newY);
+			}
+			//update missiles
+			for (Missile missile:this.missiles){
+				int life = missile.getTimeToLive();
+				life = life-1;
+				if(life<=0){
+					missiles.remove(missile);
+				}else{
+					missile.setTimeToLive(life);
+					double newX = missile.getPositionX()+missile.getVelocityX();
+					double newY = missile.getPositionY()+missile.getVelocityY();
+					if(newX>UNIVERSE_WIDTH){
+						newX=0;
+					}else if (newX < 0){
+						newX = UNIVERSE_WIDTH;
+					}
+					if(newY>UNIVERSE_HEIGHT){
+						newY=0;
+					}else if (newY < 0){
+						newY = UNIVERSE_HEIGHT;
+					}
+					missile.setPositionX(newX);
+					missile.setPositionY(newY);
+				}
 			}
 			//check for collision
 		}
@@ -294,6 +332,7 @@ public class DefaultGameInstance extends GameInstance {
 	protected void syncAllClients() throws IOException{
 		GameStateMessage message = new GameStateMessage();
 		message.setPlayers(this.players);
+		message.setMissiles(this.missiles);
 		this.sendToAll(message);
 	}
 }

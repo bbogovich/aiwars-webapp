@@ -52,6 +52,11 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 			});
 		}
 	}
+	function launchMissile(){
+		if(websocket){
+			websocket.send("game.defaultgame.inbound.LaunchMissileMessage",{});
+		}
+	}
 	function playerListCallback(response){
 		for (var i=0,ct=stateListeners.length;i<ct;i++){
 			if(stateListeners[i]){
@@ -64,10 +69,12 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 		playerRegistered=true;
 	}
 	function gameStateCallback(response){
-		console.log("New game state received");
-		console.log(response);
+		//console.log("New game state received");
+		//console.log(response);
 		var newPlayers=response.players;
+		var newMissiles=response.missiles;
 		$this.gameState.players = newPlayers;
+		$this.gameState.missiles = newMissiles;
 		for (var i=0,ct=newPlayers.length;i<ct&&newPlayers[i].userSessionId!=sessionId;i++);
 		if(i<newPlayers.length){
 			$this.player = newPlayers[i];
@@ -114,6 +121,7 @@ GameController = function(gameId,gameName,websocketURL,sessionId){
 	this.pauseGame = pauseGame;
 	this.resumeGame = resumeGame;
 	this.setHeading = setHeading;
+	this.launchMissile = launchMissile;
 	
 	this.gameState = {
 		players:[],
